@@ -200,14 +200,21 @@ class App {
         const ignoredNetworks = this.config.networksExactIgnored.map(network => network.toLocaleLowerCase());
 
         const result = items.filter(item => {
-            const itemNetwork = item.network.toLocaleLowerCase();
-            const isOk = !ignoredNetworks.includes(itemNetwork);
+            let isOk = false;
+            if (item.network) {
+                const itemNetwork = item.network.toLocaleLowerCase();
+                isOk = !ignoredNetworks.includes(itemNetwork);
 
-            if (!isOk && this.config.verbose) {
-                console.log(`${item.title} skipped because the network is not exact match.`);
+                if (!isOk && this.config.verbose) {
+                    console.log(`${item.title} skipped because the network is not exact match.`);
+                }
+            } else if (this.config.verbose) {
+                console.log(`${item.title} skipped because the network is unknown.`);
             }
+
             return isOk;
         });
+
 
         console.log();
 
@@ -222,12 +229,18 @@ class App {
         const ignoredNetworks = this.config.networksContainIgnored.map(network => network.toLocaleLowerCase());
 
         const result = items.filter(item => {
-            const itemNetwork = item.network.toLocaleLowerCase();
-            const isOk = ignoredNetworks.findIndex((ignoredNetwork) => itemNetwork.includes(ignoredNetwork)) === -1;
+            let isOk = false;
+            if (item.network) {
+                const itemNetwork = item.network.toLocaleLowerCase();
+                isOk = ignoredNetworks.findIndex((ignoredNetwork) => itemNetwork.includes(ignoredNetwork)) === -1;
 
-            if (!isOk && this.config.verbose) {
-                console.log(`${item.title} skipped because the network is not contained match.`);
+                if (!isOk && this.config.verbose) {
+                    console.log(`${item.title} skipped because the network is not contained match.`);
+                }
+            } else if (this.config.verbose) {
+                console.log(`${item.title} skipped because the network is unknown.`);
             }
+
             return isOk;
         });
 
